@@ -10,15 +10,21 @@ import Combine
 
 protocol AnimeRepository {
     func fetch() -> AnyPublisher<[Anime], Error>
+    func fetchNextPage() -> AnyPublisher<[Anime], Error>
 }
 
 struct AnimeResponse: Codable {
     let data: [AnimeItemResponse]
+    let links: Links
 }
 
 struct AnimeItemResponse: Codable {
     let id: String
     let attributes: AnimeAttributes
+}
+
+struct Links: Codable {
+    let next: String
 }
 
 struct AnimeAttributes: Codable {
@@ -28,7 +34,7 @@ struct AnimeAttributes: Codable {
     let favoritesCount: Int
     let status: String
     let posterImage: PosterImage
-    let episodeCount: Int
+    let episodeCount: Int?
 }
 
 struct PosterImage: Codable {
@@ -39,21 +45,25 @@ struct PosterImage: Codable {
 }
 
 
-struct AnimeNetworkRepository: AnimeRepository {
+class AnimeNetworkRepository: AnimeRepository {
     static let shared: AnimeRepository = AnimeNetworkRepository()
     
+    private var nextPage: String = "\(Constants.API.baseURL)/anime"
     private init() {}
     
     func fetch() -> AnyPublisher<[Anime], Error> {
-        guard let url = URL(string: "\(Constants.API.baseURL)/anime") else {
+        print(nextPage)
+        guard let url = URL(string: nextPage) else {
             fatalError("Valid URL should be provided")
         }
         
         return URLSession.shared.dataTaskPublisher(for: url)
             .map { $0.data }
             .decode(type: AnimeResponse.self, decoder: JSONDecoder())
-            .map { response in
-                response.data.map {
+            .map { dataResponse in
+                self.nextPage = dataResponse.links.next.removingPercentEncoding ?? dataResponse.links.next
+                
+                return dataResponse.data.map {
                     let urlsPosterSizes = $0.attributes.posterImage
                     
                     return Anime(id: $0.id,
@@ -67,4 +77,9 @@ struct AnimeNetworkRepository: AnimeRepository {
                 }
             }.eraseToAnyPublisher()
     }
+    
+    func fetchNextPage() -> AnyPublisher<[Anime], Error> {
+        return fetch()
+    }
+
 }

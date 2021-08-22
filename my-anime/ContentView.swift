@@ -12,8 +12,17 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView{
-            List(viewModel.animeList) { anime in
-                DiscoverAnimeItemView(vm: anime)
+            List {
+                ForEach(viewModel.animeList) { anime in
+                    DiscoverAnimeItemView(vm: anime)
+                }
+                
+                if self.viewModel.hasMoreRows {
+                    Text("Fetching more...")
+                        .onAppear(perform: {
+                            self.viewModel.fetchMore()
+                        })
+                }
             }
             .navigationTitle("Discover")
         }

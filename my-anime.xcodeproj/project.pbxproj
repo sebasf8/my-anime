@@ -24,6 +24,7 @@
 		0AF45DAF26D27DD3005BE20A /* ImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF45DAE26D27DD3005BE20A /* ImageRepository.swift */; };
 		0AF45DB426D27F17005BE20A /* NetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF45DB326D27F17005BE20A /* NetworkingError.swift */; };
 		0AF45DD326D2984A005BE20A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0AF45DD226D2984A005BE20A /* Assets.xcassets */; };
+		0AF45DD826D29CFE005BE20A /* AnimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF45DD726D29CFE005BE20A /* AnimeViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		0AF45DAE26D27DD3005BE20A /* ImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRepository.swift; sourceTree = "<group>"; };
 		0AF45DB326D27F17005BE20A /* NetworkingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingError.swift; sourceTree = "<group>"; };
 		0AF45DD226D2984A005BE20A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0AF45DD726D29CFE005BE20A /* AnimeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				0AF45D7926D25E49005BE20A /* DiscoverAnimeViewModel.swift */,
+				0AF45DD726D29CFE005BE20A /* AnimeViewModel.swift */,
 				0AF45D8C26D26C7C005BE20A /* DiscoverAnimeItemView.swift */,
 			);
 			path = Discover;
@@ -333,6 +336,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AA34CBF26D25AE2007D8909 /* Anime.swift in Sources */,
+				0AF45DD826D29CFE005BE20A /* AnimeViewModel.swift in Sources */,
 				0AF45D7A26D25E49005BE20A /* DiscoverAnimeViewModel.swift in Sources */,
 				0AF45DB426D27F17005BE20A /* NetworkingError.swift in Sources */,
 				0AA34C7F26D25A3F007D8909 /* ContentView.swift in Sources */,
