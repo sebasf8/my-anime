@@ -31,6 +31,7 @@ struct DiscoverAnimeItemView: View {
     }
 }
 
+#if DEBUG
 struct DiscoverAnimeItemView_Previews: PreviewProvider {
     
     static var previews: some View {
@@ -39,4 +40,5 @@ struct DiscoverAnimeItemView_Previews: PreviewProvider {
             .previewLayout(.fixed(width: 400.0, height: 100.0))
     }
 }
+#endif
 

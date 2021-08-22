@@ -11,11 +11,16 @@ import Combine
 protocol AnimeRepository {
     func fetch() -> AnyPublisher<[Anime], Error>
     func fetchNextPage() -> AnyPublisher<[Anime], Error>
+    func fetchTrending() -> AnyPublisher<[Anime], Error>
+}
+
+enum AnimeFetchOptions {
+    case trending, all
 }
 
 struct AnimeResponse: Codable {
     let data: [AnimeItemResponse]
-    let links: Links
+    let links: Links?
 }
 
 struct AnimeItemResponse: Codable {
@@ -52,16 +57,33 @@ class AnimeNetworkRepository: AnimeRepository {
     private init() {}
     
     func fetch() -> AnyPublisher<[Anime], Error> {
-        print(nextPage)
         guard let url = URL(string: nextPage) else {
             fatalError("Valid URL should be provided")
         }
         
+        return fetch(url: url)
+    }
+    
+    func fetchNextPage() -> AnyPublisher<[Anime], Error> {
+        return fetch()
+    }
+    
+    func fetchTrending() -> AnyPublisher<[Anime], Error> {
+        guard let url = URL(string: "\(Constants.API.baseURL)/trending/anime") else {
+            fatalError("Valid URL should be provided")
+        }
+        
+        return fetch(url: url, options: .trending)
+    }
+    
+    private func fetch(url: URL, options: AnimeFetchOptions = .all) -> AnyPublisher<[Anime], Error> {
         return URLSession.shared.dataTaskPublisher(for: url)
             .map { $0.data }
             .decode(type: AnimeResponse.self, decoder: JSONDecoder())
             .map { dataResponse in
-                self.nextPage = dataResponse.links.next.removingPercentEncoding ?? dataResponse.links.next
+                if options == .all, let links =  dataResponse.links {
+                     self.nextPage = links.next
+                }
                 
                 return dataResponse.data.map {
                     let urlsPosterSizes = $0.attributes.posterImage
@@ -76,10 +98,6 @@ class AnimeNetworkRepository: AnimeRepository {
                                    .large: urlsPosterSizes.large])
                 }
             }.eraseToAnyPublisher()
-    }
-    
-    func fetchNextPage() -> AnyPublisher<[Anime], Error> {
-        return fetch()
     }
 
 }

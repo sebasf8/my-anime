@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit.UIImage
 
 class DiscoverAnimeViewModelPreviewMock: DiscoverAnimeViewModel {
     init() {
@@ -17,17 +16,5 @@ class DiscoverAnimeViewModelPreviewMock: DiscoverAnimeViewModel {
                   favourite: true,
                   poster: [.tiny: "", .small: "", .medium: "", .large: ""]))
         ]
-    }
-    
-}
-
-class AnimeViewModelPreviewMock: AnimeViewModel {
-    override init(_ anime: Anime) {
-        super.init(anime)
-        smallPosterImage = UIImage(named: "anime-poster")!
-    }
-    
-    override func fetchPosterImage(size: PosterSize) {
-        return
     }
 }
