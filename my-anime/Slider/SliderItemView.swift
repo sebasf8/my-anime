@@ -7,17 +7,20 @@
 
 import SwiftUI
 
-struct TrendingItemView: View {
+struct SliderItemView: View {
     @ObservedObject var viewModel: AnimeViewModel
     var body: some View {
-        VStack {
+        VStack (alignment: .leading) {
             Image(uiImage: viewModel.smallPosterImage)
                 .resizable()
+                .frame(width: 140, height: 210)
                 .aspectRatio(contentMode: .fit)
+                .cornerRadius(5.0)
                 .onAppear {
                     viewModel.fetchPosterImage(size: .small)
                 }
             Text(viewModel.anime.title)
+                .bold()
             Spacer()
         }
         .frame(width: 140, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
@@ -26,7 +29,7 @@ struct TrendingItemView: View {
 
 struct FeaturedItemView_Previews: PreviewProvider {
     static var previews: some View {
-        let anime = TrendingAnimeViewModelPreviewMock().trending[0]
-        TrendingItemView(viewModel: anime)
+        let anime = SliderAnimeViewModelPreviewMock(type: .trending).animes[0]
+        SliderItemView(viewModel: anime)
     }
 }

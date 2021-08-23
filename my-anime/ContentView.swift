@@ -9,7 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        DiscoverAnimeView()
+        ZStack {
+            Color.init(Constants.Color.primaryColor)
+                .edgesIgnoringSafeArea(.all)
+            DiscoverAnimeView()
+        }
+        .foregroundColor(Color(Constants.Color.primaryTextColor))
     }
 }
 

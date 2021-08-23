@@ -18,22 +18,22 @@ class DiscoverAnimeViewModel: ObservableObject {
     init(repository: AnimeRepository = AnimeNetworkRepository.shared) {
         self.repository = repository
         
-        fetchMore()
+//        fetchMore()
     }
     
-    func fetchMore() {
-        animeSubscription = AnimeNetworkRepository.shared.fetch()
-            .receive(on: RunLoop.main)
-            .sink { completion in
-            switch completion {
-            case .finished:
-                break
-            case .failure(let error):
-                print(error)
-            }
-            return
-        } receiveValue: { [weak self] animes in
-            self?.animeList.append(contentsOf: animes.map { AnimeViewModel($0) } )
-        }
-    }
+//    func fetchMore() {
+//        animeSubscription = AnimeNetworkRepository.shared.fetch()
+//            .receive(on: RunLoop.main)
+//            .sink { completion in
+//            switch completion {
+//            case .finished:
+//                break
+//            case .failure(let error):
+//                print(error)
+//            }
+//            return
+//        } receiveValue: { [weak self] animes in
+//            self?.animeList.append(contentsOf: animes.map { AnimeViewModel($0) } )
+//        }
+//    }
 }

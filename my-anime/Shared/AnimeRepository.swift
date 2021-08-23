@@ -9,13 +9,20 @@ import Foundation
 import Combine
 
 protocol AnimeRepository {
-    func fetch() -> AnyPublisher<[Anime], Error>
-    func fetchNextPage() -> AnyPublisher<[Anime], Error>
-    func fetchTrending() -> AnyPublisher<[Anime], Error>
+    func fetch(options: AnimeFetchOptions) -> AnyPublisher<[Anime], Error>
 }
 
-enum AnimeFetchOptions {
-    case trending, all
+struct AnimeFetchOptions {
+    var categoryFilter: SliderType
+    
+    var url: URL {
+        switch categoryFilter {
+        case .trending:
+            return URL(string: "\(Constants.API.baseURL)/trending/anime")!
+        default:
+            return URL(string: "\(Constants.API.baseURL)/anime")!
+        }
+    }
 }
 
 struct AnimeResponse: Codable {
@@ -53,37 +60,22 @@ struct PosterImage: Codable {
 class AnimeNetworkRepository: AnimeRepository {
     static let shared: AnimeRepository = AnimeNetworkRepository()
     
-    private var nextPage: String = "\(Constants.API.baseURL)/anime"
     private init() {}
     
-    func fetch() -> AnyPublisher<[Anime], Error> {
-        guard let url = URL(string: nextPage) else {
-            fatalError("Valid URL should be provided")
-        }
-        
-        return fetch(url: url)
-    }
-    
-    func fetchNextPage() -> AnyPublisher<[Anime], Error> {
-        return fetch()
-    }
-    
-    func fetchTrending() -> AnyPublisher<[Anime], Error> {
-        guard let url = URL(string: "\(Constants.API.baseURL)/trending/anime") else {
-            fatalError("Valid URL should be provided")
-        }
-        
-        return fetch(url: url, options: .trending)
-    }
-    
-    private func fetch(url: URL, options: AnimeFetchOptions = .all) -> AnyPublisher<[Anime], Error> {
+//    func fetch(options: AnimeFetchOptions) -> AnyPublisher<[Anime], Error> {
+//        guard let url = URL(string: nextPage) else {
+//            fatalError("Valid URL should be provided")
+//        }
+//
+//        return fetch(url: url)
+//    }
+
+    public func fetch(options: AnimeFetchOptions) -> AnyPublisher<[Anime], Error> {
+        let url = addURLParameters(to: options.url, with: options)
         return URLSession.shared.dataTaskPublisher(for: url)
             .map { $0.data }
             .decode(type: AnimeResponse.self, decoder: JSONDecoder())
             .map { dataResponse in
-                if options == .all, let links =  dataResponse.links {
-                     self.nextPage = links.next
-                }
                 
                 return dataResponse.data.map {
                     let urlsPosterSizes = $0.attributes.posterImage
@@ -98,6 +90,12 @@ class AnimeNetworkRepository: AnimeRepository {
                                    .large: urlsPosterSizes.large])
                 }
             }.eraseToAnyPublisher()
+    }
+    
+    private func addURLParameters(to url: URL, with options: AnimeFetchOptions) -> URL {
+        guard case .category(let name) = options.categoryFilter else { return url }
+        
+        return url.appendingPathComponent("?filer[category]=\(name)")
     }
 
 }

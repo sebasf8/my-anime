@@ -11,24 +11,23 @@ struct DiscoverAnimeView: View {
     @ObservedObject var viewModel = DiscoverAnimeViewModel()
     
     var body: some View {
-        NavigationView{
-            VStack (spacing: 0) {
-                TrendingView()
-                List {
-                    ForEach(viewModel.animeList) { anime in
-                        DiscoverAnimeItemView(vm: anime)
-                    }
-                    
-                    if self.viewModel.hasMoreRows {
-                        Text("Fetching more...")
-                            .onAppear(perform: {
-                                self.viewModel.fetchMore()
-                            })
-                    }
+            ZStack {
+                Color.init(Constants.Color.primaryColor)
+                    .edgesIgnoringSafeArea(.all)
+                ScrollView{
+
+                VStack (alignment: .leading, spacing: 0) {
+                    Text("Discover")
+                        .font(.largeTitle)
+                        .bold()
+                        .padding([.leading, .top])
+                    SliderView(viewModel: SliderAnimeViewModel(type: .trending))
+                    SliderView(viewModel: SliderAnimeViewModel(type: .category(name: "Comedy")))
+                    SliderView(viewModel: SliderAnimeViewModel(type: .category(name: "Romace")))
                     
                 }
-                .listStyle(PlainListStyle())
-                .navigationTitle("Discover")
+                .foregroundColor(Color(Constants.Color.primaryTextColor))
+                
             }
         }
     }
